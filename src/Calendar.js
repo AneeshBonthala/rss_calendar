@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { format, startOfWeek, endOfWeek, addDays, subDays } from 'date-fns';
 import './Calendar.css'
-import DayTimeline from './DayTimeline.js'
+import { HoursColumn, DayTimeline } from './DayTimeline.js'
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import Button from '@mui/material/Button'
+import IconButton from '@mui/material/IconButton'
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 function Calendar() {
     const [currentDate, setCurrentDate] = useState(new Date());
@@ -27,22 +28,44 @@ function Calendar() {
 
             <div className="header">
                 <div className="prevAndNext">
-                    <Button
+                    <IconButton
                         color="inherit"
+                        size="large"
+                        // disableRipple="True"
                         onClick={() => setCurrentDate(subDays(currentDate, 7))}>
                         <NavigateBeforeIcon fontSize="large"/>
-                    </Button>
-                    <Button
+                    </IconButton>
+                    <IconButton
                         color="inherit"
+                        size="large"
+                        // disableRipple="True"
                         onClick={() => setCurrentDate(addDays(currentDate, 7))}>
                         <NavigateNextIcon fontSize="large"/>
-                    </Button>
+                    </IconButton>
                 </div>
-                <div className = "monthName">{month}</div>
+                <div className="quarterWeek">
+                    Spring 24 Week 4
+                </div>
+                <div className="addButton">
+                    <IconButton
+                        color="inherit"
+                        size="large">
+                        <AddCircleIcon fontSize="large"/>
+                    </IconButton>
+                </div>
+                
+            </div>
+
+            <div className="dateHeader">
+                <div/>
+                {days.map(date => (<div className="dateHeaderElement">{format(date, 'EEE MMM d').toString()}</div>))}
+                <div/>
             </div>
 
             <div className="body">
+                <HoursColumn/>
                 {days.map(date => (<DayTimeline key={date.toString()} date={date} />))}
+                {/* scrollbar takes up this space */}
             </div>
         
         </div>

@@ -11,31 +11,54 @@
 .header {
   display: flex;
   padding-top: 15px;
-  padding-bottom: 15px;
+  padding-bottom: 25px;
+  justify-content: center;
 }
 
 .prevAndNext {
-  width: 45%;
-  text-align: left;
   display: flex;
-  justify-content: flex-end;
   padding-right: 10px;
 }
 
-.monthName {
-  width: 55%;
-  font-size: 50px;
-  display: flex;
-  justify-content: flex-start;
+.quarterWeek {
+  font-size: 300%;
+  text-align: left;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.addButton {
   padding-left: 10px;
 }
 
-.body {
-  margin-left: 15%;
+.dateHeader {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  font-size: 20px;
-  padding: 10px;
-  text-align: center;
+  /* scrollbar */
+  grid-template-columns: 1fr repeat(7, 3fr) 12px;
+  margin-right: 2%;
+  margin-left: 2%;
 }
+
+.dateHeaderElement {
+  text-align: center;
+  padding-bottom: 15px;
+  font-size: 125%;
+  
+  
+}
+
+.body {
+  position: fixed;
+  top: auto;
+  right: 2%;
+  left: 2%;
+  bottom: auto;
+  height: 80vh;
+  overflow-y: scroll;
+  border: 1px solid gray;
+  display: grid;
+  grid-template-columns: 1fr repeat(7, 3fr);
+}
+
+
 
