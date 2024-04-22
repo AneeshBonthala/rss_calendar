@@ -1,0 +1,41 @@
+@font-face {
+    font-family: 'Westwood Sans';
+    src: url('../public/WestwoodSans-Regular.ttf') format('truetype');
+}
+
+.calendar {
+  background-color: transparent;
+  font-family: 'Westwood Sans', sans-serif;
+}
+
+.header {
+  display: flex;
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+.prevAndNext {
+  width: 45%;
+  text-align: left;
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 10px;
+}
+
+.monthName {
+  width: 55%;
+  font-size: 50px;
+  display: flex;
+  justify-content: flex-start;
+  padding-left: 10px;
+}
+
+.body {
+  margin-left: 15%;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  font-size: 20px;
+  padding: 10px;
+  text-align: center;
+}
+
