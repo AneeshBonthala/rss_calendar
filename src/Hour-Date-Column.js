@@ -1,8 +1,8 @@
 import { format } from 'date-fns';
+
 import './DayTimeline.css'
 
-function HoursColumn() {
-
+function HourColumn() {
     const hours = Array.from(new Array(24), (_, index) => index);
 
     const twelveHourTime = (time) => {
@@ -18,25 +18,24 @@ function HoursColumn() {
     };
 
     return (
-        <div className="hoursColumn">
-            {hours.map(hour => (<div key={hour} className="hourRow">{twelveHourTime(hour)}</div>
+        <div className="hours-column">
+            {hours.map(hour => (<div key={hour} className="hour">{twelveHourTime(hour)}</div>
         ))}
         </div>
     );
 }
 
-function DayTimeline({ date }) {
-
+function DateColumn({ date }) {
     const hours = Array.from(new Array(24), (_, index) => index);
 
     return (
-    <div className="dateColumn">
-        {hours.map(hour => (<div key={`${date.toString()}-${hour}`} className="dateRow"></div>))}
+    <div className="date-column">
+        {hours.map(hour => (<div key={`${date.toString()}-${hour}`} className="date-and-hour-index"></div>))}
     </div>
     );
 }
 
 export {
-    HoursColumn,
-    DayTimeline
+    HourColumn,
+    DateColumn
 }
