@@ -59,7 +59,8 @@
     bottom: auto;
     height: 80vh;
     overflow-y: scroll;
-    border: 1px solid gray;
+    box-sizing: content-box;
+    border: 1px solid darkslategray;
     display: grid;
     grid-template-columns: 1fr repeat(7, 3fr);
   }

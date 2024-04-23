@@ -1,0 +1,56 @@
+.hours-column {
+    display: grid;
+    grid-template-rows: repeat(24, 60px);
+
+    .hour {
+        text-align: center;
+        border-left: 2px solid rgba(128,128,128,0.3);
+        border-bottom: 1px solid rgba(128,128,128,0.3);
+        border-top: 1px solid rgba(128,128,128,0.3);
+        border-right: 1px solid rgba(128,128,128,0.3);
+        color: gray;
+    }
+    .hour:first-child {
+        border-top: 2px solid rgba(128,128,128,0.3);
+    }
+    .hour:last-child {
+        border-bottom: 2px solid rgba(128,128,128,0.3);
+    }
+
+}
+
+.date-column {
+    display: grid;
+    grid-template-rows: repeat(24, 60px);
+
+    .date-and-hour-index {
+        border: 1px solid rgba(128,128,128,0.3);
+        
+        .event {
+            background-color: lightblue;
+            color: black;
+            padding: 5px;
+            position: absolute; /* Position absolutely within the relative positioned hour div */
+            width: 400px;
+            text-align: center;
+        }
+    }
+}
+.date-and-hour-index:first-child {
+    border-top: 2px solid rgba(128,128,128,0.3);
+}
+.date-and-hour-index:last-child {
+    border-bottom: 2px solid rgba(128,128,128,0.3);
+}
+.date-column:last-child {
+    border-right: 2px solid rgba(128,128,128,0.3);
+}
+
+
+
+
+
+
+
+
+

@@ -17,6 +17,11 @@ function Calendar() {
         days.push(addDays(weekStart, i));
     }
 
+    const exampleEventsForDemo = [
+        { date: format(addDays(weekStart, 1), 'yyyy-MM-dd'), startHour: 9, duration: 2, title: "Team Meeting" },
+        { date: format(addDays(weekStart, 3), 'yyyy-MM-dd'), startHour: 14, duration: 1, title: "Doctor Appointment" }
+    ]
+
     return (
         <div className="calendar">
 
@@ -53,13 +58,19 @@ function Calendar() {
 
             <div className="date-names-row">
                 <div/>
-                {days.map(date => (<div className="date-name">{format(date, 'EEE MMM d').toString()}</div>))}
+                {days.map(date => (
+                    <div className="date-name">
+                        {format(date, 'EEE MMM d').toString()}
+                    </div>
+                ))}
                 <div/>
             </div>
 
             <div className="body">
                 <HourColumn/>
-                {days.map(date => (<DateColumn key={date.toString()} date={date} />))}
+                {days.map(date => (
+                    <DateColumn key={date.toString()} date={date} events={exampleEventsForDemo.filter(event => format(date, 'yyyy-MM-dd') === event.date)} />
+                ))}
                 {/* scrollbar takes up this space */}
             </div>
         
