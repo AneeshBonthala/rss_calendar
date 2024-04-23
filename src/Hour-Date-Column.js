@@ -1,3 +1,5 @@
+import { Box } from '@mui/material';
+
 import './Hour-Date-Column.css'
 
 function HourColumn() {
@@ -28,28 +30,53 @@ function HourColumn() {
 function DateColumn({ date, events }) {
     const hours = Array.from(new Array(24), (_, index) => index);
 
-    function Event({ event }) {
-      const top = event.startHour * 50; // assuming each hour slot has a height of 50px
-      const height = event.duration * 50;
-  
+    function Event( { event }) {
+
+      function toTimeString(startHour, duration) {
+        function decimalToTimeString(decimal) {
+          const hours = Math.floor(decimal);
+          const minutes = (decimal - hours) * 60;
+          const standardHour = hours % 12 === 0 ? 12 : hours % 12;
+          const standardMinutes = Math.round(minutes);
+          const amPm = hours < 12 ? 'am' : 'pm';
+          const paddedMinutes = standardMinutes.toString().padStart(2, '0');
+          return `${standardHour}:${paddedMinutes} ${amPm}`;
+        }
+        const endTime = startHour + duration;
+        const startTimeString = decimalToTimeString(startHour);
+        const endTimeString = decimalToTimeString(endTime);
+        return `${startTimeString} - ${endTimeString}`;
+      }
+
       return (
-          <div className="event" style={{ top: `${top}px`, height: `${height}px` }}>
-              {event.title}
+        <Box
+          sx={{
+            position: 'absolute',
+            width:`90%`,
+            height:`${event.duration * 60 * 0.98}px`,
+            borderRadius:2,
+            bgcolor: event.mainColor,
+            '&:hover': {bgcolor: event.hoverColor},
+            zIndex: 10
+          }}
+          onClick={() => {}}
+        >
+          <div className="event-name">
+            {event.title.concat(", ", toTimeString(event.startHour, event.duration))}
           </div>
-      );
+        </Box>
+      )
     }
 
     return (
     <div className="date-column">
         {hours.map(hour => (
-          <div key={`${date.toString()}-${hour}`} className="date-and-hour-index"></div>
+          <div key={`${date.toString()}-${hour}`} className="date-and-hour-box">
+            {events.filter(event => event.startHour === hour).map(event => (
+              <Event event={event}></Event>
+            ))}
+          </div>
         ))}
-
-        {/* {events.map(event => (
-          <Event key={event.id} event={event} />
-        ))} */}
-
-
     </div>
 
     );

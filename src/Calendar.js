@@ -18,8 +18,9 @@ function Calendar() {
     }
 
     const exampleEventsForDemo = [
-        { date: format(addDays(weekStart, 1), 'yyyy-MM-dd'), startHour: 9, duration: 2, title: "Team Meeting" },
-        { date: format(addDays(weekStart, 3), 'yyyy-MM-dd'), startHour: 14, duration: 1, title: "Doctor Appointment" }
+        { date: format(addDays(weekStart, 1), 'yyyy-MM-dd'), startHour: 4, duration: 4, title: "Team Meeting", mainColor: "#007FFF", hoverColor: "#0066CC" },
+        { date: format(addDays(weekStart, 4), 'yyyy-MM-dd'), startHour: 7, duration: 2.5, title: "Reading to Kids", mainColor: "#FF8000", hoverColor: "#CC6600" },
+        { date: format(addDays(weekStart, 3), 'yyyy-MM-dd'), startHour: 2, duration: 4, title: "Beach Clean Up", mainColor: "#FF0200", hoverColor: "#B70100" },
     ]
 
     return (
@@ -44,7 +45,7 @@ function Calendar() {
                         </IconButton>
                     </div>
                     <div className="week-name">
-                        Spring 24 Week 4
+                        Spring 24 Week Four
                     </div>
                 </div>
                 <div className="add-event-button">

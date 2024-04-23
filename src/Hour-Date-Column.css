@@ -1,3 +1,8 @@
+@font-face {
+    font-family: 'Roboto';
+    src: url('../public/Roboto-Medium.ttf') format('truetype');
+}
+
 .hours-column {
     display: grid;
     grid-template-rows: repeat(24, 60px);
@@ -22,35 +27,26 @@
 .date-column {
     display: grid;
     grid-template-rows: repeat(24, 60px);
+    position: relative;
+    z-index: 1;
 
-    .date-and-hour-index {
+    .date-and-hour-box {
         border: 1px solid rgba(128,128,128,0.3);
+        position: relative;
         
-        .event {
-            background-color: lightblue;
+        .event-name {
             color: black;
-            padding: 5px;
-            position: absolute; /* Position absolutely within the relative positioned hour div */
-            width: 400px;
-            text-align: center;
+            padding: 3px;
+            text-align: left;
         }
     }
-}
-.date-and-hour-index:first-child {
-    border-top: 2px solid rgba(128,128,128,0.3);
-}
-.date-and-hour-index:last-child {
-    border-bottom: 2px solid rgba(128,128,128,0.3);
+    .date-and-hour-box:first-child {
+        border-top: 2px solid rgba(128,128,128,0.3);
+    }
+    .date-and-hour-box:last-child {
+        border-bottom: 2px solid rgba(128,128,128,0.3);
+    }
 }
 .date-column:last-child {
     border-right: 2px solid rgba(128,128,128,0.3);
 }
-
-
-
-
-
-
-
-
-
