@@ -5,7 +5,7 @@ import { DateColumn, HourColumn } from './Hour-Date-Column.js'
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import IconButton from '@mui/material/IconButton'
-import AddCircleIcon from '@mui/icons-material/AddCircle';
+// import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 import './Calendar.css'
 
@@ -17,16 +17,7 @@ function Calendar() {
         days.push(addDays(weekStart, i));
     }
 
-    function setCurDateHelper(forward) {
-        if (!forward && curDate >= new Date(2024, 0, 13)) {
-            setCurDate(subWeeks(curDate, 1));
-        }
-        else if (forward && curDate < new Date(2028, 5, 4)) {
-            setCurDate(addWeeks(curDate, 1));
-        }
-    }
-
-    /** The following section is included so that the calendar scrollbar defaults to start at 8 am */
+    // The following section is included so that the calendar scrollbar defaults to start at 8 am
     const scrollRef = useRef(null);
     useEffect(() => {
         if (scrollRef.current) {
@@ -35,9 +26,9 @@ function Calendar() {
     })
 
     const exampleEventsForDemo = [
-        { date: '2024-04-22', startHour: 9, duration: 4, title: "Team Meeting", mainColor: "#007FFF", hoverColor: "#0066CC" },
-        { date: '2024-04-24', startHour: 11, duration: 2.5, title: "Reading to Kids", mainColor: "#FF8000", hoverColor: "#CC6600" },
-        { date: '2024-04-25', startHour: 14, duration: 3.75, title: "Beach Clean Up", mainColor: "#FF0200", hoverColor: "#B70100" },
+        { date: format(addDays(weekStart, 3), 'yyyy-MM-dd'), startHour: 9, duration: 4, title: "Team Meeting", mainColor: "#007FFF", hoverColor: "#0066CC" },
+        { date: format(addDays(weekStart, 4), 'yyyy-MM-dd'), startHour: 11, duration: 2.5, title: "Reading to Kids", mainColor: "#FF8000", hoverColor: "#CC6600" },
+        { date: format(addDays(weekStart, 2), 'yyyy-MM-dd'), startHour: 14, duration: 3.75, title: "Beach Clean Up", mainColor: "#FF0200", hoverColor: "#B70100" },
     ]
 
     return (
@@ -49,27 +40,27 @@ function Calendar() {
                         color="inherit"
                         size="large"
                         // disableRipple="True"
-                        onClick={() => setCurDateHelper(false)}>
+                        onClick={() => setCurDate(subWeeks(curDate, 1))}>
                         <NavigateBeforeIcon fontSize="large"/>
                     </IconButton>
                     <IconButton
                         color="inherit"
                         size="large"
                         // disableRipple="True"
-                        onClick={() => setCurDateHelper(true)}>
+                        onClick={() => setCurDate(addWeeks(curDate, 1))}>
                         <NavigateNextIcon fontSize="large"/>
                     </IconButton>
                 </div>
                 <div className="week-name">
                     {getWeekName(weekStart)}
                 </div>
-                <div className="add-event-button">
+                {/* <div className="add-event-button">
                     <IconButton
                         color="inherit"
                         size="large">
                         <AddCircleIcon fontSize="large"/>
                     </IconButton>
-                </div>
+                </div> */}
             </div>
 
             <div className="date-names-row">
@@ -98,29 +89,14 @@ export default Calendar;
 
 function getWeekName(curDate) {
 
-    // The pattern implemented here only supports Winter 24 through Spring 28 (inclusive)
-
     let curYear = curDate.getFullYear();
 
-    function getNthWeekdayOfMonth(month, weekday, n) {
-        let date = new Date(curYear, month, 1);
+    function getNthWeekdayOfMonth(year, month, weekday, n) {
+        let date = new Date(year, month, 1);
         while (date.getDay() !== weekday) {
             date = addDays(date, 1);
         }
         date = addWeeks(date, n-1);
-        return date;
-    }
-
-    function getNthToLastWeekdayOfMonth(month, weekday, n) {
-        if (month === "December") {
-            curYear += 1;
-        }
-        let date = new Date(curYear, month+1, 1);
-        date = subDays(date, 1);
-        while (date.getDay() !== weekday) {
-            date = subDays(date, 1);
-        }
-        date = subWeeks(date, n-1);
         return date;
     }
 
@@ -132,19 +108,22 @@ function getWeekName(curDate) {
     }
 
     // Calendar week starts on sunday (inclusive) and ends on the next sunday (exclusive)
-    
-    // Fall Week 0 starts on 2nd to last Monday in September
-    const fallStart = getSundayBefore(getNthToLastWeekdayOfMonth(8, 1, 2));
-    const fallEnd = addWeeks(fallStart, 12);
 
-    // Winter Week 1 starts on laterOf(1st Monday in January, January 4th)
-    const fst = getSundayBefore(getNthWeekdayOfMonth(0, 0, 1));
+    // The fixed reference point seems to be the start of winter quarter, which is laterOf(1st Monday in January, January 4th)
+    const fst = getSundayBefore(getNthWeekdayOfMonth(curYear, 0, 0, 1));
     const snd = getSundayBefore(new Date(curYear, 0, 4));
     const winterStart = fst < snd ? snd : fst;
     const winterEnd = addWeeks(winterStart, 11);
 
-    const springStart = addWeeks(winterStart, 12);
+    const springStart = addWeeks(winterEnd, 1);
     const springEnd = addWeeks(springStart, 11);
+    
+    // To find fall start date, we need to find the start date of next year's winter quarter and go back 15 weeks
+    const nextFst = getSundayBefore(getNthWeekdayOfMonth(curYear+1, 0, 0, 1));
+    const nextSnd = getSundayBefore(new Date(curYear+1, 0, 4));
+    const nextWinterStart = nextFst < nextSnd ? nextSnd : nextFst;
+    const fallStart = subWeeks(nextWinterStart, 15);
+    const fallEnd = addWeeks(fallStart, 12);
     
     const quarterDates = [
         ["Fall", fallStart, fallEnd],
