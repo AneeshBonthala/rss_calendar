@@ -33,12 +33,6 @@
     .date-and-hour-box {
         border: 1px solid rgba(128,128,128,0.3);
         position: relative;
-        
-        .event-name {
-            color: black;
-            padding: 3px;
-            text-align: left;
-        }
     }
     .date-and-hour-box:first-child {
         border-top: 2px solid rgba(128,128,128,0.3);

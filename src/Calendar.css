@@ -9,32 +9,35 @@
 
   .header {
     display: flex;
-    padding-top: 15px;
-    padding-bottom: 25px;
+    padding-top: 1.25%;
+    padding-bottom: 20px;
   }
 
-    .arrow-buttons-and-week-name {
+    /* .arrow-buttons-and-week-name {
       width: 65%;
       justify-content: flex-end;
       display: flex;
+    } */
+
+    .arrow-buttons {
+      justify-content: left;
+      margin-left: 2%;
+      width: 10%;
+      text-align: center;
     }
 
-      .arrow-buttons {
-        display: flex;
-        padding-right: 10px;
-      }
-
-      .week-name {
-        font-size: 300%;
-        text-align: left;
-        padding-left: 10px;
-        padding-right: 10px;
-      }
+    .week-name {
+      width: 80%;
+      font-size: 300%;
+      justify-content: left;
+      text-align: center;
+    }
 
     .add-event-button {
-      width: 35%;
+      width: 10%;
+      display: flex-end;
       margin-right: 2%;
-      text-align: right;
+      text-align: center;
     }
 
   .date-names-row {
@@ -60,7 +63,7 @@
     height: 80vh;
     overflow-y: scroll;
     box-sizing: content-box;
-    border: 1px solid darkslategray;
+    border: 2px solid darkslategray;
     display: grid;
     grid-template-columns: 1fr repeat(7, 3fr);
   }
