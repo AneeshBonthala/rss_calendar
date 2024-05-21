@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { addDays, addWeeks, differenceInDays, format, isAfter, isBefore, isEqual, startOfWeek, subDays, subWeeks } from 'date-fns';
+import { addDays, addWeeks, differenceInDays, format, startOfWeek, subDays, subWeeks } from 'date-fns';
 import { DateColumn, HourColumn } from './Hour-Date-Column.js'
 
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
@@ -15,6 +15,15 @@ function Calendar() {
     const days = [];
     for (let i = 0; i < 7; i++) {
         days.push(addDays(weekStart, i));
+    }
+
+    function setCurDateHelper(forward) {
+        if (!forward && curDate >= new Date(2024, 0, 13)) {
+            setCurDate(subWeeks(curDate, 1));
+        }
+        else if (forward && curDate < new Date(2028, 5, 4)) {
+            setCurDate(addWeeks(curDate, 1));
+        }
     }
 
     /** The following section is included so that the calendar scrollbar defaults to start at 8 am */
@@ -40,14 +49,14 @@ function Calendar() {
                         color="inherit"
                         size="large"
                         // disableRipple="True"
-                        onClick={() => setCurDate(subDays(curDate, 7))}>
+                        onClick={() => setCurDateHelper(false)}>
                         <NavigateBeforeIcon fontSize="large"/>
                     </IconButton>
                     <IconButton
                         color="inherit"
                         size="large"
                         // disableRipple="True"
-                        onClick={() => setCurDate(addDays(curDate, 7))}>
+                        onClick={() => setCurDateHelper(true)}>
                         <NavigateNextIcon fontSize="large"/>
                     </IconButton>
                 </div>
@@ -89,11 +98,11 @@ export default Calendar;
 
 function getWeekName(curDate) {
 
-    // The pattern implemented here only works until 2028-2029 academic year; for some reason, it changes thereafter
+    // The pattern implemented here only supports Winter 24 through Spring 28 (inclusive)
 
     let curYear = curDate.getFullYear();
 
-    const getNthWeekdayOfMonth = function(month, weekday, n) {
+    function getNthWeekdayOfMonth(month, weekday, n) {
         let date = new Date(curYear, month, 1);
         while (date.getDay() !== weekday) {
             date = addDays(date, 1);
@@ -102,7 +111,7 @@ function getWeekName(curDate) {
         return date;
     }
 
-    const getNthToLastWeekdayOfMonth = function(month, weekday, n) {
+    function getNthToLastWeekdayOfMonth(month, weekday, n) {
         if (month === "December") {
             curYear += 1;
         }
@@ -115,60 +124,52 @@ function getWeekName(curDate) {
         return date;
     }
 
-    // subDays(1) or addDays(1) is because the calendar week starts on Sunday and start is inclusive and end is exclusive
-    
-    // Fall Week 0 always starts on 2nd to last Monday in September
-    let fallStart = getNthToLastWeekdayOfMonth(8, 1, 2);
-    fallStart = subDays(fallStart, 1);
-    let fallEnd = new Date(fallStart);
-    fallEnd = addWeeks(fallStart, 12);
-    
-    // Winter starts on laterOf(1st Monday in January, January 4th)
-    let winterStart;
-    let winterStart1 = getNthWeekdayOfMonth(0, 0, 1);
-    let winterStart2 = new Date(curYear, 0, 4);
-    if (winterStart1 < winterStart2) {
-        while (winterStart2.getDay() !== 6) {
-            winterStart2 = subDays(winterStart2, 1);
+    function getSundayBefore(date) {
+        while (date.getDay() !== 0) {
+            date = subDays(date, 1);
         }
-        winterStart = winterStart2;
+        return date;
     }
-    else {
-        winterStart = winterStart1;
-        winterStart = subDays(winterStart, 1);
-    }
-    let winterEnd = new Date(winterStart);
-    winterEnd = addWeeks(winterEnd, 11);
+
+    // Calendar week starts on sunday (inclusive) and ends on the next sunday (exclusive)
     
-    let springStart = new Date(winterStart);
-    springStart = addWeeks(winterStart, 12);
-    let springEnd = new Date(springStart);
-    springEnd = addWeeks(springEnd, 11);
+    // Fall Week 0 starts on 2nd to last Monday in September
+    const fallStart = getSundayBefore(getNthToLastWeekdayOfMonth(8, 1, 2));
+    const fallEnd = addWeeks(fallStart, 12);
+
+    // Winter Week 1 starts on laterOf(1st Monday in January, January 4th)
+    const fst = getSundayBefore(getNthWeekdayOfMonth(0, 0, 1));
+    const snd = getSundayBefore(new Date(curYear, 0, 4));
+    const winterStart = fst < snd ? snd : fst;
+    const winterEnd = addWeeks(winterStart, 11);
+
+    const springStart = addWeeks(winterStart, 12);
+    const springEnd = addWeeks(springStart, 11);
     
-    const quarterDates = new Map([
-        ["Fall", [fallStart, fallEnd]],
-        ["Winter Break1", [fallEnd, new Date(curYear + 1, 0, 1)]],
-        ["Winter Break2", [new Date(curYear, 0, 1), winterStart]],
-        ["Winter", [winterStart, winterEnd]],
-        ["Spring Break ", [winterEnd, springStart]],
-        ["Spring", [springStart, springEnd]],
-    ]);
+    const quarterDates = [
+        ["Fall", fallStart, fallEnd],
+        ["Winter Break", fallEnd, new Date(curYear + 1, 0, 1)],
+        ["Winter Break", new Date(curYear, 0, 1), winterStart],
+        ["Winter", winterStart, winterEnd],
+        ["Spring Break ", winterEnd, springStart],
+        ["Spring", springStart, springEnd],
+    ];
 
     // Get the current quarter
-    let curQuarter, curQuarterStart, set;
-    for (let [quarter, [quarterStart, quarterEnd]] of quarterDates) {
-        if ((isEqual(curDate, quarterStart) || isAfter(curDate, quarterStart)) && isBefore(curDate, quarterEnd)) {
+    let curQuarter, curQuarterStart;
+    for (let [quarter, quarterStart, quarterEnd] of quarterDates) {
+        if (curDate >= quarterStart && curDate < quarterEnd) {
             curQuarter = quarter;
-            console.log(curQuarter);
             curQuarterStart = quarterStart;
-            set = true;
         }
     }
-    if (!set) {
+
+    // Return the week name
+    if (curQuarter === undefined) {
         return "Summer Break";
     }
-    if (["Winter Break1", "Winter Break2", "Spring Break "].includes(curQuarter)) {
-        return curQuarter.slice(0, -1);
+    if (["Winter Break", "Spring Break"].includes(curQuarter)) {
+        return curQuarter;
     }
     const yearSuffix = " " + curYear.toString().slice(-2)
     if (curQuarter === "Fall") {
@@ -176,7 +177,7 @@ function getWeekName(curDate) {
             return "Fall" + yearSuffix + " Week Zero";
         curQuarterStart = addDays(curQuarterStart, 7);
     }
-    const iToWeek = ["One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Finals"]
+    const iToWeek = ["One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"]
     for (let i = 0; i < 10; i++) {
         if (differenceInDays(curDate, curQuarterStart) < 7) {
             return curQuarter + yearSuffix + " Week " + iToWeek[i];
