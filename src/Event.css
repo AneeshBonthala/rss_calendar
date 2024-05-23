@@ -4,3 +4,13 @@
     text-align: left;
     /* font-family: 'Roboto'; */
 }
+
+.event-details {
+    font-family: 'Roboto';
+    font-size: 15px;
+}
+
+/* .expanded-event {
+	position: relative;
+	right: 50px;
+} */

@@ -1,71 +1,71 @@
 @font-face {
-    font-family: 'Westwood Sans';
+	font-family: 'Westwood Sans';
     src: url('../public/WestwoodSans-Regular.ttf') format('truetype');
 }
 
 .calendar {
-  background-color: transparent;
-  font-family: 'Westwood Sans', sans-serif;
-
-  .header {
-    display: flex;
-    padding-top: 1.25%;
-    padding-bottom: 20px;
-  }
-
-    /* .arrow-buttons-and-week-name {
-      width: 65%;
-      justify-content: flex-end;
-      display: flex;
-    } */
-
-    .arrow-buttons {
-      justify-content: left;
-      margin-left: 2%;
-      width: 10%;
-      text-align: center;
-    }
-
-    .week-name {
-      width: 80%;
-      font-size: 300%;
-      justify-content: left;
-      text-align: center;
-    }
-
-    .add-event-button {
-      width: 10%;
-      display: flex-end;
-      margin-right: 2%;
-      text-align: center;
-    }
-
-  .date-names-row {
-    display: grid;
-    /* the 11px section below is reserved for scrollbar offset */
-    grid-template-columns: 1fr repeat(7, 3fr) 11px;
-    margin-right: 2%;
-    margin-left: 2%;
-  }
-
-    .date-name {
-      text-align: center;
-      padding-bottom: 15px;
-      font-size: 125%;
-    }
-
-  .body {
-    position: fixed;
-    top: auto;
-    right: 2%;
-    left: 2%;
-    bottom: auto;
-    height: 80vh;
-    overflow-y: scroll;
-    box-sizing: content-box;
-    border: 2px solid darkslategray;
-    display: grid;
-    grid-template-columns: 1fr repeat(7, 3fr);
-  }
+	background-color: transparent;
+	font-family: 'Westwood Sans', sans-serif;
+	display: flex;
+	margin: 2vh;
   
+  	.main {
+		width: 74%;
+		padding-right: 2%;
+
+  		.header {
+    		display: flex;
+    		
+    		padding-bottom: 20px;
+
+			.arrow-buttons {
+				justify-content: left;
+				margin-left: 2%;
+				width: 20%;
+				text-align: center;
+			}
+
+			.week-name {
+				width: 60%;
+				font-size: 300%;
+				justify-content: left;
+				text-align: center;
+			}
+
+			/* .add-event-button {
+				width: 10%;
+				display: flex-end;
+				margin-right: 2%;
+				text-align: center;
+			} */
+		}
+
+		.date-names-row {
+			display: grid;
+			/* the 11px section below is reserved for scrollbar offset */
+			grid-template-columns: 1fr repeat(7, 3fr);
+
+			.date-name {
+				text-align: center;
+				padding-bottom: 15px;
+				font-size: 125%;
+			}
+		
+		}
+
+		.body {
+			height: 80vh;
+			overflow-y: scroll;
+			box-sizing: content-box;
+			border: 2px solid darkslategray;
+			display: grid;
+			grid-template-columns: 1fr repeat(7, 3fr);
+		}
+	}
+
+	.sidebar {
+		width:24%;
+		border: 2px solid black;
+	}
+
 }

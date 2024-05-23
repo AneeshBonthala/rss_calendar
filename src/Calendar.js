@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { addDays, addWeeks, differenceInDays, format, startOfWeek, subDays, subWeeks } from 'date-fns';
 import { DateColumn, HourColumn } from './Hour-Date-Column.js'
+import { ExpandedEvent } from './Event.js'
 
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
@@ -10,6 +11,8 @@ import IconButton from '@mui/material/IconButton'
 import './Calendar.css'
 
 function Calendar() {
+
+    // Initialize date state
     const [curDate, setCurDate] = useState(new Date());
     const weekStart = startOfWeek(curDate);
     const days = [];
@@ -17,75 +20,108 @@ function Calendar() {
         days.push(addDays(weekStart, i));
     }
 
-    // The following section is included so that the calendar scrollbar defaults to start at 8 am
+    // Initialize current expanded event state
+    const [expandedEventID, setExpandedEventID] = useState(null);
+    const expand = (id) => {
+        setExpandedEventID(expandedEventID === id ? null : id);
+    }
+
+    // On refresh, default calendar scrollbar to start at 8 am, and reset expanded event
     const scrollRef = useRef(null);
     useEffect(() => {
         if (scrollRef.current) {
             scrollRef.current.scrollTop = 60 * 8 - 1;
         }
-    })
+        setExpandedEventID(null);
+    }, [])
 
-    const exampleEventsForDemo = [
-        { date: format(addDays(weekStart, 3), 'yyyy-MM-dd'), startHour: 9, duration: 4, title: "Team Meeting", mainColor: "#007FFF", hoverColor: "#0066CC" },
-        { date: format(addDays(weekStart, 4), 'yyyy-MM-dd'), startHour: 11, duration: 2.5, title: "Reading to Kids", mainColor: "#FF8000", hoverColor: "#CC6600" },
-        { date: format(addDays(weekStart, 2), 'yyyy-MM-dd'), startHour: 14, duration: 3.75, title: "Beach Clean Up", mainColor: "#FF0200", hoverColor: "#B70100" },
-    ]
+    const header =
+    <div className="header">
+        <div className="arrow-buttons">
+            <IconButton
+                color="inherit"
+                size="large"
+                // disableRipple="True"
+                onClick={() => setCurDate(subWeeks(curDate, 1))}>
+                <NavigateBeforeIcon fontSize="large"/>
+            </IconButton>
+            <IconButton
+                color="inherit"
+                size="large"
+                // disableRipple="True"
+                onClick={() => setCurDate(addWeeks(curDate, 1))}>
+                <NavigateNextIcon fontSize="large"/>
+            </IconButton>
+        </div>
+        <div className="week-name">
+            {getWeekName(weekStart)}
+        </div>
+        {/* <div className="add-event-button">
+            <IconButton
+                color="inherit"
+                size="large">
+                <AddCircleIcon fontSize="large"/>
+            </IconButton>
+        </div> */}
+    </div>
+
+    const dateNamesRow =
+    <div className="date-names-row">
+        <div/>
+        {days.map(date => (
+            <div className="date-name">
+                {format(date, 'EEE MMM d').toString()}
+            </div>
+        ))}
+        <div/>
+    </div>
+
+    const body =
+    <div className="body" ref={scrollRef}>
+        <HourColumn/>
+        {days.map(date => (
+            <DateColumn
+                key={date.toString()}
+                date={date}
+                expandedEventID = {expandedEventID}
+                events={exampleEvents}
+                expand = {(id) => expand(id)}
+            />
+        ))}
+        {/* scrollbar takes up this space */}
+    </div>
+
+    const expandedEvent =
+        <ExpandedEvent
+                event = {exampleEvents.get(expandedEventID)}
+            >
+        </ExpandedEvent>
 
     return (
         <div className="calendar">
-
-            <div className="header">
-                <div className="arrow-buttons">
-                    <IconButton
-                        color="inherit"
-                        size="large"
-                        // disableRipple="True"
-                        onClick={() => setCurDate(subWeeks(curDate, 1))}>
-                        <NavigateBeforeIcon fontSize="large"/>
-                    </IconButton>
-                    <IconButton
-                        color="inherit"
-                        size="large"
-                        // disableRipple="True"
-                        onClick={() => setCurDate(addWeeks(curDate, 1))}>
-                        <NavigateNextIcon fontSize="large"/>
-                    </IconButton>
-                </div>
-                <div className="week-name">
-                    {getWeekName(weekStart)}
-                </div>
-                {/* <div className="add-event-button">
-                    <IconButton
-                        color="inherit"
-                        size="large">
-                        <AddCircleIcon fontSize="large"/>
-                    </IconButton>
-                </div> */}
+            <div className="main">
+                {header}
+                {dateNamesRow}
+                {body}
             </div>
-
-            <div className="date-names-row">
-                <div/>
-                {days.map(date => (
-                    <div className="date-name">
-                        {format(date, 'EEE MMM d').toString()}
-                    </div>
-                ))}
-                <div/>
+            <div className="sidebar">
+                {expandedEventID === null ? null : expandedEvent}
             </div>
-
-            <div className="body" ref={scrollRef}>
-                <HourColumn/>
-                {days.map(date => (
-                    <DateColumn key={date.toString()} date={date} events={exampleEventsForDemo.filter(event => format(date, 'yyyy-MM-dd') === event.date)} />
-                ))}
-                {/* scrollbar takes up this space */}
-            </div>
-        
         </div>
     );
 }
 
 export default Calendar;
+
+const event1 = {date: format(addDays(startOfWeek(new Date()), 3), 'yyyy-MM-dd'), startHour: 9, duration: 2.5, title: "Team Meeting", mainColor: "#007FFF", hoverColor: "#0066CC", details: "A productive session to discuss projects, set goals, and collaborate on tasks. Share updates and brainstorm ideas with the team." }
+const event2 = {date: format(addDays(startOfWeek(new Date()), 3), 'yyyy-MM-dd'), startHour: 10, duration: 4, title: "Reading to Kids", mainColor: "#FF8000", hoverColor: "#CC6600", details: "Enjoy an hour of storytelling to children, fostering their love for books and sparking their imagination."}
+const event3 = {date: format(addDays(startOfWeek(new Date()), 2), 'yyyy-MM-dd'), startHour: 14, duration: 3.75, title: "Beach Clean Up", mainColor: "#FF0200", hoverColor: "#B70100", details: "Join us in removing litter from the beach to protect marine life and promote environmental awareness. Make a difference in our coastal ecosystems."}
+const exampleEvents = new Map();
+exampleEvents.set(1, event1);
+exampleEvents.set(2, event2);
+exampleEvents.set(3, event3);
+
+// ex. convert week of 'Sun May 19' - 'Sat May 25' to 'Spring 24 Week Eight'
 
 function getWeekName(curDate) {
 
@@ -119,8 +155,8 @@ function getWeekName(curDate) {
     const springEnd = addWeeks(springStart, 11);
     
     // To find fall start date, we need to find the start date of next year's winter quarter and go back 15 weeks
-    const nextFst = getSundayBefore(getNthWeekdayOfMonth(curYear+1, 0, 0, 1));
-    const nextSnd = getSundayBefore(new Date(curYear+1, 0, 4));
+    const nextFst = getSundayBefore(getNthWeekdayOfMonth(curYear + 1, 0, 0, 1));
+    const nextSnd = getSundayBefore(new Date(curYear + 1, 0, 4));
     const nextWinterStart = nextFst < nextSnd ? nextSnd : nextFst;
     const fallStart = subWeeks(nextWinterStart, 15);
     const fallEnd = addWeeks(fallStart, 12);
