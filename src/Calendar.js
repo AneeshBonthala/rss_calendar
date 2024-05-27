@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { addDays, addWeeks, differenceInDays, format, startOfWeek, subDays, subWeeks } from 'date-fns';
 import { DateColumn, HourColumn } from './Hour-Date-Column.js'
-import { ExpandedEvent } from './Event.js'
+import { ExpandedEvent, DateOverview } from './Event.js'
 
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
@@ -26,6 +26,13 @@ function Calendar() {
         setExpandedEventID(expandedEventID === id ? null : id);
     }
 
+    // Initialize current date overview state
+    const [dateInOverview, setDateInOverview] = useState(curDate);
+    const setDateInOverviewHelper = (date) => {
+        setDateInOverview(date);
+        setExpandedEventID(null);
+    }
+
     // On refresh, default calendar scrollbar to start at 8 am, and reset expanded event
     const scrollRef = useRef(null);
     useEffect(() => {
@@ -41,14 +48,12 @@ function Calendar() {
             <IconButton
                 color="inherit"
                 size="large"
-                // disableRipple="True"
                 onClick={() => setCurDate(subWeeks(curDate, 1))}>
                 <NavigateBeforeIcon fontSize="large"/>
             </IconButton>
             <IconButton
                 color="inherit"
                 size="large"
-                // disableRipple="True"
                 onClick={() => setCurDate(addWeeks(curDate, 1))}>
                 <NavigateNextIcon fontSize="large"/>
             </IconButton>
@@ -56,20 +61,15 @@ function Calendar() {
         <div className="week-name">
             {getWeekName(weekStart)}
         </div>
-        {/* <div className="add-event-button">
-            <IconButton
-                color="inherit"
-                size="large">
-                <AddCircleIcon fontSize="large"/>
-            </IconButton>
-        </div> */}
     </div>
 
     const dateNamesRow =
     <div className="date-names-row">
         <div/>
         {days.map(date => (
-            <div className="date-name">
+            <div className="date-name"
+                onClick = {() => setDateInOverviewHelper(date)}
+            >
                 {format(date, 'EEE MMM d').toString()}
             </div>
         ))}
@@ -94,8 +94,14 @@ function Calendar() {
     const expandedEvent =
         <ExpandedEvent
                 event = {exampleEvents.get(expandedEventID)}
-            >
+        >
         </ExpandedEvent>
+
+    const dateOverview =
+        <DateOverview
+            date = {format(dateInOverview, 'EEEE, MMMM d').toString()}
+        >
+        </DateOverview>
 
     return (
         <div className="calendar">
@@ -105,7 +111,7 @@ function Calendar() {
                 {body}
             </div>
             <div className="sidebar">
-                {expandedEventID === null ? null : expandedEvent}
+                {expandedEventID === null ? dateOverview : expandedEvent}
             </div>
         </div>
     );

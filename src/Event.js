@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import { Box } from '@mui/material';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
 
 import './Event.css'
 
 
-function Event( { id, event, expand }) {
+function Event({id, event, expand}) {
 
 	const eventBox =
 		<Box
@@ -32,23 +30,26 @@ function Event( { id, event, expand }) {
 	)
 }
 
-function ExpandedEvent( {event} ) {
+function ExpandedEvent({event}) {
 
 	const eventBox = 
-		<Card
-			variant = "outlined"
-		>
-			<div>{event.title}</div>
-		</Card>
+		<div>{event.title}</div>
 
 	return (
 		<div className = "expanded-event">{eventBox}</div>
 	)
 }
 
+function DateOverview({date}) {
+	return (
+		<div className = "date-overview">{date}</div>
+	)
+}
+
 export {
     Event,
-    ExpandedEvent
+    ExpandedEvent,
+	DateOverview
 }
 
 // ex. convert (3, 2) to 3:00 am - 5:00 am
