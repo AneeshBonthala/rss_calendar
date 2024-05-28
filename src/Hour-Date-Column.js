@@ -1,5 +1,4 @@
 import { Event } from './Event.js'
-import { format } from 'date-fns';
 
 import './Hour-Date-Column.css'
 
@@ -28,24 +27,15 @@ function HourColumn() {
     );
 }
 
-function DateColumn({ date, events, expand }) {
+function DateColumn({ date, events, goToDateOverview }) {
 
     const hours = Array.from(new Array(24), (_, index) => index);
 
-	// Only get today's events
-	const eventsToday = new Map();
-	for (const [id, event] of events) {
-		if (event.date === format(date, 'yyyy-MM-dd')) {
-			eventsToday.set(id, event);
-		}
-	}
-
 	const eventsNow = (hour) => {
 		const eventsNow = new Map();
-		for (const [id, event] of eventsToday) {
-			if (event.startHour === hour) {
+		for (const [id, event] of events) {
+			if (Math.floor(event.startHour) === hour) {
 				eventsNow.set(id, event);
-				eventsToday.delete(id);
 			}
 		}
 		return eventsNow;
@@ -55,9 +45,8 @@ function DateColumn({ date, events, expand }) {
 		<div key={`${date.toString()}-${hour}`} className="date-and-hour-box">
 			{Array.from(eventsNow(hour).entries()).map(([id, event]) => (
 				<Event
-					id = {id}
 					event={event}
-					expand={(id) => expand(id)}
+					goToDateOverview={() => goToDateOverview()}
 				></Event>
 			))}
 		</div>

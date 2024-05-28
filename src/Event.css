@@ -1,16 +1,63 @@
+@font-face {
+	font-family: 'Roboto-Regular';
+    src: url('../public/Roboto-Regular.ttf') format('truetype');
+}
+
+@font-face {
+	font-family: 'Roboto-Medium';
+    src: url('../public/Roboto-Medium.ttf') format('truetype');
+}
+
 .event-name {
     color: black;
     padding: 3px;
     text-align: left;
-    /* font-family: 'Roboto'; */
+    overflow: hidden;
+    font-family: 'Roboto-Medium';
 }
 
-.event-details {
-    font-family: 'Roboto';
-    font-size: 15px;
-}
+.date-overview {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    
+    .date-title {
+        font-size: 300%;
+        width: 100%;
+        text-align: center;
+        padding-bottom: 20px;
+    }
 
-/* .expanded-event {
-	position: relative;
-	right: 50px;
-} */
+    .event-details {
+        display: flex;
+        flex-direction: column;
+        width: 96%;
+        margin-left: 3%;
+        margin-right: 1%;
+
+        .title {
+            font-size: 150%;
+        }
+
+        .time {
+            padding-bottom: 5px;
+            font-family: 'Roboto-Regular';
+        }
+
+        .location {
+            padding-bottom: 5px;
+            font-family: 'Roboto-Regular';
+        }
+
+        .link {
+            padding-bottom: 5px;
+            font-family: 'Roboto-Regular';
+        }
+
+        .details {
+            font-family: 'Roboto-Regular';
+        }
+    }
+
+
+}

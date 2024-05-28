@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { addDays, addWeeks, differenceInDays, format, startOfWeek, subDays, subWeeks } from 'date-fns';
 import { DateColumn, HourColumn } from './Hour-Date-Column.js'
-import { ExpandedEvent, DateOverview } from './Event.js'
+import { DateOverview } from './Event.js'
 
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
@@ -10,7 +10,7 @@ import IconButton from '@mui/material/IconButton'
 
 import './Calendar.css'
 
-function Calendar() {
+function Calendar({events}) {
 
     // Initialize date state
     const [curDate, setCurDate] = useState(new Date());
@@ -20,27 +20,38 @@ function Calendar() {
         days.push(addDays(weekStart, i));
     }
 
-    // Initialize current expanded event state
-    const [expandedEventID, setExpandedEventID] = useState(null);
-    const expand = (id) => {
-        setExpandedEventID(expandedEventID === id ? null : id);
-    }
-
     // Initialize current date overview state
     const [dateInOverview, setDateInOverview] = useState(curDate);
-    const setDateInOverviewHelper = (date) => {
-        setDateInOverview(date);
-        setExpandedEventID(null);
-    }
 
-    // On refresh, default calendar scrollbar to start at 8 am, and reset expanded event
+    // On refresh, default calendar scrollbar to right above earliest event of the week, and to today's date on sidebar
     const scrollRef = useRef(null);
     useEffect(() => {
         if (scrollRef.current) {
-            scrollRef.current.scrollTop = 60 * 8 - 1;
+            let earliestStart = 11;
+            let date = curDate;
+            for (let i = 0; i < 7; i += 1) {
+                for (let [, event] of daysEvents(date)) {
+                    if (event.startHour < earliestStart && event.startHour >= 0) {
+                        earliestStart = event.startHour;
+                    }
+                }
+                date = addDays(curDate, 1);
+            }
+            scrollRef.current.scrollTop = 60 * Math.floor(earliestStart - 1) - 1;
         }
-        setExpandedEventID(null);
+        setDateInOverview(new Date());
     }, [])
+
+    // Only get one day's events
+    function daysEvents(date) {
+        const eventsToday = new Map();
+        for (const [id, event] of events) {
+            if (event.date === format(date, 'yyyy-MM-dd')) {
+                eventsToday.set(id, event);
+            }
+        }
+        return eventsToday;
+    }
 
     const header =
     <div className="header">
@@ -68,7 +79,7 @@ function Calendar() {
         <div/>
         {days.map(date => (
             <div className="date-name"
-                onClick = {() => setDateInOverviewHelper(date)}
+                onClick = {() => setDateInOverview(date)}
             >
                 {format(date, 'EEE MMM d').toString()}
             </div>
@@ -83,23 +94,18 @@ function Calendar() {
             <DateColumn
                 key={date.toString()}
                 date={date}
-                expandedEventID = {expandedEventID}
-                events={exampleEvents}
-                expand = {(id) => expand(id)}
+                events={daysEvents(date)}
+                goToDateOverview = {() => setDateInOverview(date)}
             />
         ))}
         {/* scrollbar takes up this space */}
     </div>
 
-    const expandedEvent =
-        <ExpandedEvent
-                event = {exampleEvents.get(expandedEventID)}
-        >
-        </ExpandedEvent>
-
     const dateOverview =
         <DateOverview
-            date = {format(dateInOverview, 'EEEE, MMMM d').toString()}
+            day = {format(dateInOverview, 'EEEE,').toString()}
+            date = {format(dateInOverview, 'MMMM d').toString()}
+            events = {Array.from(daysEvents(dateInOverview).values())}
         >
         </DateOverview>
 
@@ -111,21 +117,16 @@ function Calendar() {
                 {body}
             </div>
             <div className="sidebar">
-                {expandedEventID === null ? dateOverview : expandedEvent}
+                <div className="sidebar-main">
+                    {dateOverview}
+                </div>
+                <div className="sidebar-scroll"></div>
             </div>
         </div>
     );
 }
 
 export default Calendar;
-
-const event1 = {date: format(addDays(startOfWeek(new Date()), 3), 'yyyy-MM-dd'), startHour: 9, duration: 2.5, title: "Team Meeting", mainColor: "#007FFF", hoverColor: "#0066CC", details: "A productive session to discuss projects, set goals, and collaborate on tasks. Share updates and brainstorm ideas with the team." }
-const event2 = {date: format(addDays(startOfWeek(new Date()), 3), 'yyyy-MM-dd'), startHour: 10, duration: 4, title: "Reading to Kids", mainColor: "#FF8000", hoverColor: "#CC6600", details: "Enjoy an hour of storytelling to children, fostering their love for books and sparking their imagination."}
-const event3 = {date: format(addDays(startOfWeek(new Date()), 2), 'yyyy-MM-dd'), startHour: 14, duration: 3.75, title: "Beach Clean Up", mainColor: "#FF0200", hoverColor: "#B70100", details: "Join us in removing litter from the beach to protect marine life and promote environmental awareness. Make a difference in our coastal ecosystems."}
-const exampleEvents = new Map();
-exampleEvents.set(1, event1);
-exampleEvents.set(2, event2);
-exampleEvents.set(3, event3);
 
 // ex. convert week of 'Sun May 19' - 'Sat May 25' to 'Spring 24 Week Eight'
 

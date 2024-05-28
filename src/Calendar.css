@@ -60,14 +60,23 @@
 			display: grid;
 			grid-template-columns: 1fr repeat(7, 3fr);
 			overflow-y: scroll;
-			box-sizing: content-box;
+			/* box-sizing: content-box; */
 			border: 2px solid darkslategray;
 		}
 	}
 
 	.sidebar {
-		width: 22vw;
-		border: 2px solid black;
+		display: flex;
+		flex-direction: row;
+		overflow-y: scroll;
+
+		.sidebar-main {
+			width: 22vw;
+			border: 2px solid darkslategray;
+			overflow-x: hidden;
+			
+		}
+		
 	}
 
 }
