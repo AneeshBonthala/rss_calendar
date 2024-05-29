@@ -17,7 +17,7 @@ function Event({event, goToDateOverview}) {
 				position: 'absolute',
 				width: `95%`,
 				top: `${(event.startHour - Math.floor(event.startHour)) * 60}px`,
-				height:`${event.duration * 60 - 7}px`,
+				height:`${event.duration + event.startHour > 24 ? (24 - event.startHour) * 60 - 5 : event.duration * 60 - 5}px`,
 				overflow: 'hidden',
 				borderRadius:2,
 				bgcolor: event.color,

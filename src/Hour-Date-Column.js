@@ -7,29 +7,32 @@ function HourColumn() {
 
     const twelveHourTime = (time) => {
         if (time === 0) {
-          return "12 am";
-        } else if (time === 12) {
-          return "12 pm";
-        } else if (time < 12) {
-          return time.toString().concat(" am");
-        } else {
-          return (time - 12).toString().concat(" pm");
+            return "12 am";
+        }
+        else if (time === 12) {
+            return "12 pm";
+        }
+        else if (time < 12) {
+            return time.toString().concat(" am");
+        }
+        else {
+            return (time - 12).toString().concat(" pm");
         }
     };
 
     return (
         <div className="hours-column">
             {hours.map(hour => (
-              <div key={hour} className="hour">
-                {twelveHourTime(hour)}
-              </div>))}
+                <div key={hour} className="hour">
+                    {twelveHourTime(hour)}
+                </div>))}
         </div>
     );
 }
 
 function DateColumn({ date, events, goToDateOverview }) {
 
-    const hours = Array.from(new Array(24), (_, index) => index);
+  const hours = Array.from(new Array(24), (_, index) => index);
 
 	const eventsNow = (hour) => {
 		const eventsNow = new Map();
@@ -43,7 +46,7 @@ function DateColumn({ date, events, goToDateOverview }) {
 
 	const createEventsNow = (hour) => (
 		<div key={`${date.toString()}-${hour}`} className="date-and-hour-box">
-			{Array.from(eventsNow(hour).entries()).map(([id, event]) => (
+			{Array.from(eventsNow(hour).entries()).map(([, event]) => (
 				<Event
 					event={event}
 					goToDateOverview={() => goToDateOverview()}

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { addDays, addWeeks, differenceInDays, format, startOfWeek, subDays, subWeeks } from 'date-fns';
 import { DateColumn, HourColumn } from './Hour-Date-Column.js'
 import { DateOverview } from './Event.js'
@@ -14,21 +14,31 @@ function Calendar({events}) {
 
     // Initialize date state
     const [curDate, setCurDate] = useState(new Date());
-    const weekStart = startOfWeek(curDate);
     const days = [];
     for (let i = 0; i < 7; i++) {
-        days.push(addDays(weekStart, i));
+        days.push(addDays(startOfWeek(curDate), i));
     }
 
     // Initialize current date overview state
     const [dateInOverview, setDateInOverview] = useState(curDate);
+
+    // Only get one day's events
+    const daysEvents = useCallback((date) => {
+        const eventsToday = new Map();
+        for (const [id, event] of events) {
+            if (event.date === format(date, 'yyyy-MM-dd')) {
+                eventsToday.set(id, event);
+            }
+        }
+        return eventsToday;
+    }, [events]);
 
     // On refresh, default calendar scrollbar to right above earliest event of the week, and to today's date on sidebar
     const scrollRef = useRef(null);
     useEffect(() => {
         if (scrollRef.current) {
             let earliestStart = 11;
-            let date = weekStart;
+            let date = startOfWeek(curDate);
             for (let i = 0; i < 7; i += 1) {
                 for (let [, event] of daysEvents(date)) {
                     console.log(event.startHour);
@@ -38,24 +48,12 @@ function Calendar({events}) {
                 }
                 date = addDays(date, 1);
             }
-            console.log(earliestStart);
             scrollRef.current.scrollTop = 60 * Math.floor(earliestStart - 1) - 1;
         }
         setDateInOverview(new Date());
-    }, [])
+    }, [curDate, daysEvents])
 
-    // Only get one day's events
-    function daysEvents(date) {
-        const eventsToday = new Map();
-        for (const [id, event] of events) {
-            if (event.date === format(date, 'yyyy-MM-dd')) {
-                eventsToday.set(id, event);
-            }
-        }
-        return eventsToday;
-    }
-
-    const header =
+    const header = (
     <div className="header">
         <div className="arrow-buttons">
             <IconButton
@@ -72,11 +70,11 @@ function Calendar({events}) {
             </IconButton>
         </div>
         <div className="week-name">
-            {getWeekName(weekStart)}
+            {getWeekName(startOfWeek(curDate))}
         </div>
-    </div>
+    </div>);
 
-    const dateNamesRow =
+    const dateNamesRow = (
     <div className="date-names-row">
         <div/>
         {days.map(date => (
@@ -87,9 +85,9 @@ function Calendar({events}) {
             </div>
         ))}
         <div/>
-    </div>
+    </div>);
 
-    const body =
+    const body = (
     <div className="body" ref={scrollRef}>
         <HourColumn/>
         {days.map(date => (
@@ -101,7 +99,7 @@ function Calendar({events}) {
             />
         ))}
         {/* scrollbar takes up this space */}
-    </div>
+    </div>);
 
     const dateOverview =
         <DateOverview
