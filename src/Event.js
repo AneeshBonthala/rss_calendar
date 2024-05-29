@@ -17,11 +17,13 @@ function Event({event, goToDateOverview}) {
 				position: 'absolute',
 				width: `95%`,
 				top: `${(event.startHour - Math.floor(event.startHour)) * 60}px`,
-				height:`${event.duration * 60 * 0.98}px`,
+				height:`${event.duration * 60 - 7}px`,
+				overflow: 'hidden',
 				borderRadius:2,
 				bgcolor: event.color,
 				'&:hover': {bgcolor: darkenHexColor(event.color), zIndex: 20},
 				zIndex: 10,
+				border: '1px solid black',
 			}}
 			onClick = {() => goToDateOverview()}
 		>
@@ -97,9 +99,9 @@ export {
 
 // ex. convert (3, 2) to 3:00 am - 5:00 am
 function formatTime(hour, minutes = 0) {
-	let period = 'AM';
+	let period = 'am';
 	if (hour >= 12) {
-	  period = 'PM';
+	  period = 'pm';
 	}
 	hour = hour % 12;
 	if (hour === 0) {

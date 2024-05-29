@@ -3,17 +3,11 @@
     src: url('../public/Roboto-Regular.ttf') format('truetype');
 }
 
-@font-face {
-	font-family: 'Roboto-Medium';
-    src: url('../public/Roboto-Medium.ttf') format('truetype');
-}
-
 .event-name {
     color: black;
     padding: 3px;
     text-align: left;
-    overflow: hidden;
-    font-family: 'Roboto-Medium';
+    
 }
 
 .date-overview {
@@ -55,6 +49,7 @@
         }
 
         .details {
+            padding-top: 5px;
             font-family: 'Roboto-Regular';
         }
     }

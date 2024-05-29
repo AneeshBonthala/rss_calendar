@@ -28,15 +28,17 @@ function Calendar({events}) {
     useEffect(() => {
         if (scrollRef.current) {
             let earliestStart = 11;
-            let date = curDate;
+            let date = weekStart;
             for (let i = 0; i < 7; i += 1) {
                 for (let [, event] of daysEvents(date)) {
-                    if (event.startHour < earliestStart && event.startHour >= 0) {
+                    console.log(event.startHour);
+                    if (event.startHour < earliestStart && event.startHour >= 5) {
                         earliestStart = event.startHour;
                     }
                 }
-                date = addDays(curDate, 1);
+                date = addDays(date, 1);
             }
+            console.log(earliestStart);
             scrollRef.current.scrollTop = 60 * Math.floor(earliestStart - 1) - 1;
         }
         setDateInOverview(new Date());
