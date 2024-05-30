@@ -19,3 +19,5 @@ An event calendar built from scratch for the UCLA Regents Scholar Society.
 ### To-Do
 
 * Concurrent events can be handled better; develop a visually aesthetic system to layer events which occur at the same time.
+* All-day events could be more noticeable.
+* Perhaps default sidebar to a full week overview.
